@@ -55,6 +55,4 @@ curl -X POST http://localhost:5678/webhook/faq-query \
 
 ## 🧪 Testing
 Run all sample queries in `tests/sample-queries.json` and verify expected keywords are returned.
-
-## 📬 Support
-Contact: people@altibbe.com
+Once your tests are done, you can add FAQ PDFs of any kind to **data/** and proceed with embedding and next steps.
