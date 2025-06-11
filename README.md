@@ -54,5 +54,5 @@ curl -X POST http://localhost:5678/webhook/faq-query \
 - `CHROMA_DB_PATH`: Local path to Chroma persistence
 
 ## 🧪 Testing
-Run all sample queries in `tests/sample-queries.json` and verify expected keywords are returned.
-Once your tests are done, you can add FAQ PDFs of any kind to **data/** and proceed with embedding and next steps.
+- Run all sample queries in `tests/sample-queries.json` and verify expected keywords are returned.
+- Once your tests are done, you can add FAQ PDFs of any kind to **data/** and proceed with embedding and next steps.
