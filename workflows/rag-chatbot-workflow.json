@@ -1,0 +1,68 @@
+{
+    "name": "RAG Chatbot Workflow",
+    "nodes": [
+      {
+        "parameters": {
+          "path": "faq-query",
+          "method": "POST",
+          "responseMode": "onReceived"
+        },
+        "name": "HTTP Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [250, 300]
+      },
+      {
+        "parameters": {
+          "functionCode": "const query = $json['query'] || '';\nreturn { json: { cleanQuery: query.trim() } };"
+        },
+        "name": "Preprocess Query",
+        "type": "n8n-nodes-base.function",
+        "typeVersion": 1,
+        "position": [450, 300]
+      },
+      {
+        "parameters": {
+          "functionCode": "const { spawnSync } = require('child_process');\nconst result = spawnSync('python3', ['scripts/query_chroma.py', $json.cleanQuery]);\nreturn { json: JSON.parse(result.stdout.toString()) };"
+        },
+        "name": "Query Chroma DB",
+        "type": "n8n-nodes-base.function",
+        "typeVersion": 1,
+        "position": [650, 300]
+      },
+      {
+        "parameters": {
+          "functionCode": "const { Configuration, OpenAIApi } = require('openai');\nconst config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });\nconst openai = new OpenAIApi(config);\n\nconst response = await openai.createChatCompletion({\n  model: 'gpt-3.5-turbo',\n  messages: [{\n    role: 'system',\n    content: `Use the following context to answer the query:\\n\\n${$json.context}\\n\\nQuery: ${$json.query}`\n  }]\n});\n\nreturn { json: { answer: response.data.choices[0].message.content } };"
+        },
+        "name": "Generate Answer",
+        "type": "n8n-nodes-base.function",
+        "typeVersion": 1,
+        "position": [850, 300]
+      },
+      {
+        "parameters": {
+          "responseData": "={{$json.answer}}",
+          "responseCode": 200
+        },
+        "name": "Return Response",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1,
+        "position": [1050, 300]
+      }
+    ],
+    "connections": {
+      "HTTP Webhook": {
+        "main": [[{ "node": "Preprocess Query", "type": "main", "index": 0 }]]
+      },
+      "Preprocess Query": {
+        "main": [[{ "node": "Query Chroma DB", "type": "main", "index": 0 }]]
+      },
+      "Query Chroma DB": {
+        "main": [[{ "node": "Generate Answer", "type": "main", "index": 0 }]]
+      },
+      "Generate Answer": {
+        "main": [[{ "node": "Return Response", "type": "main", "index": 0 }]]
+      }
+    }
+}
+  

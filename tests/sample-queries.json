@@ -1,0 +1,23 @@
+[
+    {
+      "query": "What are the core values of Altibbe?",
+      "expected_keywords": ["integrity", "empathy", "diligence"]
+    },
+    {
+      "query": "Explain how the chatbot handles errors.",
+      "expected_keywords": ["fallback", "graceful", "logging"]
+    },
+    {
+      "query": "Which embedding model and database is used?",
+      "expected_keywords": ["OpenAI", "Chroma"]
+    },
+    {
+      "query": "What is the chunking strategy for documents?",
+      "expected_keywords": ["500", "1000", "tokens"]
+    },
+    {
+      "query": "How can this be scaled to support images?",
+      "expected_keywords": ["multi-modal", "extension", "future"]
+    }
+  ]
+  
